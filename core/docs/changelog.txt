@@ -1,0 +1,5 @@
+Changelog for TrackDuck.
+
+0.0.1-beta
+==============
+- Initial release
