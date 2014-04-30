@@ -1,6 +1,9 @@
 <?php
 class TrackDuckIndexManagerController extends modExtraManagerController
 {
+	/**
+	 * @var TrackDuck
+	 */
 	protected $manager;
 
 	public function __construct(modX &$modx, $config = array())
@@ -30,9 +33,11 @@ class TrackDuckIndexManagerController extends modExtraManagerController
 		$this->addJavascript($jsUrl . 'widgets/grids.js');
 		$this->addJavascript($jsUrl . 'widgets/panels.js');
 		$this->addLastJavascript($jsUrl . 'sections/index.js');
+		$this->addCss($this->manager->getOption('cssUrl') . 'mgr.css');
 		$config = $this->manager->getConfig();
 		$config['contexts'] = $this->manager->getContexts();
 		$config['returnUrl'] = $this->modx->getOption('url_scheme', null, MODX_URL_SCHEME) . $this->modx->getOption('http_host', null, MODX_HTTP_HOST) . $this->modx->getOption('manager_url', null, MODX_MANAGER_URL) . 'index.php?a=' . intval($_GET['a']);
+		$config['expertMode'] = (bool)$this->modx->getOption('trackduck.expert_mode', null, false);
 		$this->addHtml('
 <script type="text/javascript">
 	Ext.onReady(function() {

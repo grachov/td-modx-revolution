@@ -15,6 +15,7 @@ $_lang['trackduck.context.key'] = 'Context';
 $_lang['trackduck.context.url'] = 'URL';
 $_lang['trackduck.context.project_id'] = 'Project ID';
 $_lang['trackduck.context.enabled'] = 'Enabled';
+$_lang['trackduck.context.actions'] = 'Actions';
 $_lang['trackduck.context_err_ns'] = 'Context key not set.';
 $_lang['trackduck.context_err_nfs'] = 'Context with key "[[+key]]" was not found.';
 $_lang['trackduck.action.disable'] = 'Disable integration';
@@ -23,7 +24,8 @@ $_lang['trackduck.action.enable'] = 'Enable integration';
 $_lang['trackduck.action.change_project'] = 'Change Project ID';
 $_lang['trackduck.action.set_project'] = 'Set Project ID';
 
+$_lang['area_system'] = 'TrackDuck Settings';
 $_lang['area_project'] = 'TrackDuck Project Settings';
 
 $_lang['setting_trackduck.project_id'] = 'Project ID';
-$_lang['setting_trackduck.enabled'] = 'Enabled';
+$_lang['setting_trackduck.show_mgr_context'] = 'Show manager context in the list';

@@ -7,6 +7,7 @@ $plugins = array(
 		'description' => '',
 		'events' => array(
 			'OnLoadWebDocument',
+			'OnBeforeManagerPageInit',
 		),
 	),
 );

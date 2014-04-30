@@ -47,35 +47,22 @@ class TrackDuck
 	public function getContexts()
 	{
 		$contexts = array();
-		$query = $this->modx->newQuery('modContext', array(
-			'key:<>' => 'mgr',
-		));
+		$query = $this->modx->newQuery('modContext');
+		if (!$this->modx->getOption('trackduck.show_mgr_context', null, false)) {
+			$query->where(array(
+				'key:<>' => 'mgr',
+			));
+		}
 		foreach ($this->modx->getIterator('modContext', $query) as $context) {
 			if ($context->prepare()) {
 				$contexts[] = array(
 					'key' => $context->get('key'),
 					'url' => $context->getOption('site_url', $this->modx->getOption('site_url')),
 					'project_id' => trim($context->getOption('trackduck.project_id')),
-					'enabled' => (boolean)$context->getOption('trackduck.enabled'),
 				);
 			}
 		}
 		return $contexts;
-	}
-
-	public function enableProject($context)
-	{
-		return $this->changeProjectStatus($context, true);
-	}
-
-	public function disableProject($context)
-	{
-		return $this->changeProjectStatus($context, false);
-	}
-
-	public function changeProjectStatus($context, $status)
-	{
-		return $this->changeContextSetting($context, 'trackduck.enabled', $status ? 1 : 0, 'combo-boolean');
 	}
 
 	public function setProject($context, $projectId)
