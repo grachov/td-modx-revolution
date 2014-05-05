@@ -76,6 +76,11 @@ Ext.extend(TrackDuck.grid.Contexts, MODx.grid.LocalGrid, {
 				}
 			};
 			Ext.each(contexts, function (context) {
+				if (context.project_id == -1) {
+					context.project_id = '';
+					addRecord(context);
+					return;
+				}
 				TrackDuck.getSettings(context.url, function (status, responseCode, error, data) {
 					if (status === TrackDuck.OK) {
 						if (context.project_id == data.projectId) {
@@ -161,7 +166,7 @@ Ext.extend(TrackDuck.grid.Contexts, MODx.grid.LocalGrid, {
 		w.show();
 	},
 	disableProject: function (record) {
-		this.changeProject(record);
+		this.changeProject(record, -1);
 	},
 	enableProject: function (record) {
 		record = this.getRecord(record);
@@ -192,7 +197,8 @@ Ext.extend(TrackDuck.grid.Contexts, MODx.grid.LocalGrid, {
 			listeners: {
 				success: {
 					fn: function (response) {
-						record.set('project_id', (response.object || {}).project_id || '');
+						var projectId = (response.object || {}).project_id || '';
+						record.set('project_id', projectId == -1 ? '' : projectId);
 						record.commit();
 					}
 				}
