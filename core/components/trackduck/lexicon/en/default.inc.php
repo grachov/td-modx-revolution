@@ -24,8 +24,9 @@ $_lang['trackduck.action.enable'] = 'Enable integration';
 $_lang['trackduck.action.change_project'] = 'Change Project ID';
 $_lang['trackduck.action.set_project'] = 'Set Project ID';
 
-$_lang['area_system'] = 'TrackDuck Settings';
-$_lang['area_project'] = 'TrackDuck Project Settings';
+$_lang['area_trackduck.system'] = 'TrackDuck Settings';
+$_lang['area_trackduck.project'] = 'TrackDuck Project Settings';
 
 $_lang['setting_trackduck.project_id'] = 'Project ID';
 $_lang['setting_trackduck.show_mgr_context'] = 'Show manager context in the list';
+$_lang['setting_trackduck.expert_mode'] = 'Expert mode';

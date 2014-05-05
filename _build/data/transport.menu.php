@@ -1,5 +1,4 @@
 <?php
-
 $result = array();
 
 $menus = array(
@@ -49,5 +48,5 @@ foreach ($menus as $k => $v) {
 	$result[] = $menu;
 }
 
-unset($action, $menu);
+unset($menus, $action, $menu);
 return $result;

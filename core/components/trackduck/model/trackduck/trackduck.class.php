@@ -70,7 +70,7 @@ class TrackDuck
 		return $this->changeContextSetting($context, 'trackduck.project_id', trim($projectId));
 	}
 
-	protected function changeContextSetting($context, $name, $value, $type = 'textfield', $area = 'project')
+	protected function changeContextSetting($context, $name, $value, $type = 'textfield', $area = 'trackduck.project')
 	{
 		$criteria = array(
 			'context_key' => $context,

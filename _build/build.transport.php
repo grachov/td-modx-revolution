@@ -40,6 +40,23 @@ $builder->registerNamespace(PKG_NAME_LOWER, false, true, '{core_path}components/
 
 $modx->log(modX::LOG_LEVEL_INFO, 'Created Transport Package and Namespace.');
 
+$settings = include $sources['data'] . 'transport.settings.php';
+if (is_array($settings)) {
+	$attributes = array(
+		xPDOTransport::UNIQUE_KEY => 'key',
+		xPDOTransport::PRESERVE_KEYS => true,
+		xPDOTransport::UPDATE_OBJECT => BUILD_SETTING_UPDATE,
+	);
+	foreach ($settings as $setting) {
+		$vehicle = $builder->createVehicle($setting, $attributes);
+		$builder->putVehicle($vehicle);
+	}
+	$modx->log(modX::LOG_LEVEL_INFO, 'Packaged in ' . count($settings) . ' system settings.');
+} else {
+	$modx->log(modX::LOG_LEVEL_ERROR, 'No system settings found for packaging.');
+}
+unset($settings, $setting, $attributes);
+
 $modx->log(xPDO::LOG_LEVEL_INFO, 'Packaging menus.');
 $menus = include $sources['data'] . 'transport.menu.php';
 if (is_array($menus)) {
