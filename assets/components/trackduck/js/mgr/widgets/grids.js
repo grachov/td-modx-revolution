@@ -1,19 +1,19 @@
 TrackDuck.grid.Contexts = function (config) {
 	config = config || {};
+	var fields = [
+		'key',
+		'url',
+		'project_id'
+	];
+	var record = Ext.data.Record.create(fields);
+	var contexts = [];
+	Ext.each(TrackDuck.config.contexts, function (context) {
+		contexts.push(new record(context, context.key));
+	});
 	Ext.applyIf(config, {
 		url: TrackDuck.config.connectorUrl,
-		corsSupported: false,
 		autoHeight: true,
-		fields: [
-			'key',
-			'url',
-			'project_id'
-		],
-		contextRecord: [
-			'key',
-			'url',
-			'project_id'
-		],
+		fields: fields,
 		paging: true,
 		remoteSort: false,
 		columns: [{
@@ -37,7 +37,7 @@ TrackDuck.grid.Contexts = function (config) {
 			dataIndex: 'project_id',
 			width: 30,
 			sortable: true,
-			renderer: this.rendYesNo
+			renderer: this.renderYesNo
 		}, {
 			header: _('trackduck.context.actions'),
 			width: 40,
@@ -47,74 +47,12 @@ TrackDuck.grid.Contexts = function (config) {
 				scope: this
 			}
 		}],
-		autoExpandColumn: 'url',
-		listeners: {
-			afterrender: {
-				fn: this.addContexts,
-				scope: this
-			}
-		}
+		autoExpandColumn: 'url'
 	});
 	TrackDuck.grid.Contexts.superclass.constructor.call(this, config);
-	this.contextRecord = Ext.data.Record.create(config.contextRecord);
+	this.getStore().add(contexts);
 };
 Ext.extend(TrackDuck.grid.Contexts, MODx.grid.LocalGrid, {
-	addContexts: function () {
-		var grid = this;
-		var store = grid.getStore();
-		var contexts = TrackDuck.config.contexts || [];
-		var total = contexts.length;
-		if (total) {
-			grid.loadMask.show();
-			var addRecord = function (context) {
-				if (context.key) {
-					store.add(new grid.contextRecord(context, context.key));
-				}
-				total--;
-				if (total < 1) {
-					grid.loadMask.hide();
-				}
-			};
-			Ext.each(contexts, function (context) {
-				if (context.project_id == -1) {
-					context.project_id = '';
-					addRecord(context);
-					return;
-				}
-				TrackDuck.getSettings(context.url, function (status, responseCode, error, data) {
-					if (status === TrackDuck.OK) {
-						if (context.project_id == data.projectId) {
-							addRecord(context);
-						} else {
-							MODx.Ajax.request({
-								url: grid.url,
-								params: {
-									action: 'context/update',
-									key: context.key,
-									project_id: data.projectId
-								},
-								listeners: {
-									success: {
-										fn: function (response) {
-											addRecord(response.object || {});
-										}
-									},
-									failure: {
-										fn: function (response) {
-											addRecord(response.object || {});
-										}
-									}
-								}
-							});
-						}
-					} else {
-						context.project_id = '';
-						addRecord(context);
-					}
-				});
-			});
-		}
-	},
 	getMenu: function () {
 		if (!TrackDuck.config.expertMode) {
 			return [];
@@ -141,12 +79,17 @@ Ext.extend(TrackDuck.grid.Contexts, MODx.grid.LocalGrid, {
 		}
 		return menu;
 	},
+	showLogin: function () {
+		MODx.load({
+			xtype: 'trackduck-window-login'
+		}).show();
+	},
 	updateProject: function () {
 		var record = this.getStore().getById(this.menu.record.key);
 		if (!record) {
 			return;
 		}
-		var w = MODx.load({
+		MODx.load({
 			xtype: 'trackduck-window-update-project',
 			record: record.data,
 			listeners: {
@@ -161,12 +104,10 @@ Ext.extend(TrackDuck.grid.Contexts, MODx.grid.LocalGrid, {
 					scope: this
 				}
 			}
-		});
-		w.setTitle(_('trackduck.project.update'));
-		w.show();
+		}).show();
 	},
 	disableProject: function (record) {
-		this.changeProject(record, -1);
+		this.changeProject(record);
 	},
 	enableProject: function (record) {
 		record = this.getRecord(record);
@@ -174,11 +115,20 @@ Ext.extend(TrackDuck.grid.Contexts, MODx.grid.LocalGrid, {
 			return;
 		}
 		var self = this;
+		var message = Ext.MessageBox.wait(_('trackduck.signup.checking_status'), _('please_wait'));
 		TrackDuck.getSettings(record.get('url'), function (status, responseCode, error, data) {
-			if (status === TrackDuck.OK) {
-				self.changeProject(record, data.projectId);
-			} else {
-				self.createProject(record);
+			message.hide();
+			switch (status) {
+				case TrackDuck.NOT_SUPPORTED:
+					break;
+				case TrackDuck.OK:
+					self.changeProject(record, data.projectId);
+					break;
+				case TrackDuck.NOT_LOGGED:
+					self.showLogin();
+					break;
+				default:
+					self.createProject(record);
 			}
 		});
 	},
@@ -187,6 +137,7 @@ Ext.extend(TrackDuck.grid.Contexts, MODx.grid.LocalGrid, {
 		if (!record) {
 			return;
 		}
+		var message = Ext.MessageBox.wait(_('saving'), _('please_wait'));
 		MODx.Ajax.request({
 			url: this.url,
 			params: {
@@ -194,11 +145,13 @@ Ext.extend(TrackDuck.grid.Contexts, MODx.grid.LocalGrid, {
 				key: record.id,
 				project_id: project_id || ''
 			},
+			callback: function () {
+				message.hide();
+			},
 			listeners: {
 				success: {
 					fn: function (response) {
-						var projectId = (response.object || {}).project_id || '';
-						record.set('project_id', projectId == -1 ? '' : projectId);
+						record.set('project_id', (response.object || {}).project_id || '');
 						record.commit();
 					}
 				}
@@ -235,12 +188,12 @@ Ext.extend(TrackDuck.grid.Contexts, MODx.grid.LocalGrid, {
 		if (!record) {
 			return null;
 		}
-		if (record instanceof this.contextRecord) {
+		if (record instanceof Ext.data.Record) {
 			return record;
 		}
 		return this.getStore().getById(record.key || '');
 	},
-	rendYesNo: function (value, meta) {
+	renderYesNo: function (value, meta) {
 		if (value === '') {
 			meta.css = 'red';
 			return _('no');

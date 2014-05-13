@@ -21,11 +21,7 @@ Ext.extend(TrackDuck, Ext.Component, {
 		if ('withCredentials' in xhr) {
 			xhr.open(method, url, true);
 		} else {
-			if (typeof XDomainRequest != 'undefined') {
-				xhr = null;
-			} else {
-				xhr = null;
-			}
+			xhr = null;
 		}
 		return xhr;
 	},
