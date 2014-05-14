@@ -159,7 +159,11 @@ Ext.extend(TrackDuck.grid.Contexts, MODx.grid.LocalGrid, {
 		});
 	},
 	createProject: function (record) {
-		window.location.href = TrackDuck.config.createProjectUrl + '?url=' + encodeURIComponent(record.get('url'));
+		Ext.Msg.confirm(_('warning'), _('trackduck.project.create_confirmation'), function (e) {
+			if (e == 'yes') {
+				window.open(TrackDuck.config.createProjectUrl + '?url=' + encodeURIComponent(record.get('url')), '_blank');
+			}
+		});
 	},
 	renderProjectButtons: function (value, meta, record) {
 		var id = Ext.id();

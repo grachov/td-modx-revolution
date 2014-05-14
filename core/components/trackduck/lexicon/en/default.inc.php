@@ -20,6 +20,7 @@ $_lang['trackduck.context.actions'] = 'Actions';
 $_lang['trackduck.context_err_ns'] = 'Context key not set.';
 $_lang['trackduck.context_err_nfs'] = 'Context with key "[[+key]]" was not found.';
 $_lang['trackduck.project.update'] = 'Update Project';
+$_lang['trackduck.project.create_confirmation'] = 'Project was not found for this URL. Do you want to create a new project?';
 $_lang['trackduck.action.disable'] = 'Disable integration';
 $_lang['trackduck.action.enable'] = 'Enable integration';
 $_lang['trackduck.action.change_project'] = 'Change Project ID';
