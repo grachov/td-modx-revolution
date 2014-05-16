@@ -159,11 +159,14 @@ Ext.extend(TrackDuck.grid.Contexts, MODx.grid.LocalGrid, {
 		});
 	},
 	createProject: function (record) {
-		Ext.Msg.confirm(_('warning'), _('trackduck.project.create_confirmation'), function (e) {
-			if (e == 'yes') {
+		var button = Ext.Msg.confirm(_('warning'), _('trackduck.project.create_confirmation')).getDialog().getFooterToolbar().find('text', Ext.MessageBox.buttonText.yes).shift();
+		if (button) {
+			var handler = function () {
+				button.removeListener('click', handler);
 				window.open(TrackDuck.config.createProjectUrl + '?url=' + encodeURIComponent(record.get('url')), '_blank');
-			}
-		});
+			};
+			button.addListener('click', handler);
+		}
 	},
 	renderProjectButtons: function (value, meta, record) {
 		var id = Ext.id();
