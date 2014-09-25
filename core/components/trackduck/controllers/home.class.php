@@ -1,5 +1,5 @@
 <?php
-class TrackDuckIndexManagerController extends modExtraManagerController
+class TrackDuckHomeManagerController extends modExtraManagerController
 {
 	/**
 	 * @var TrackDuck
@@ -38,9 +38,11 @@ class TrackDuckIndexManagerController extends modExtraManagerController
 		$config['contexts'] = $this->manager->getContexts();
 		$config['returnUrl'] = $this->modx->getOption('url_scheme', null, MODX_URL_SCHEME) . $this->modx->getOption('http_host', null, MODX_HTTP_HOST) . $this->modx->getOption('manager_url', null, MODX_MANAGER_URL) . 'index.php?a=' . intval($_GET['a']);
 		$config['expertMode'] = (bool)$this->modx->getOption('trackduck.expert_mode', null, false);
+		$isModx23 = !empty($this->modx->version) && version_compare($this->modx->version['full_version'], '2.3.0', '>=') ? 1 : 0;
 		$this->addHtml('
 <script type="text/javascript">
 	Ext.onReady(function() {
+		MODx.modx23 = ' . $isModx23 . ';
 		TrackDuck.config = ' . $this->modx->toJSON($config) . ';
 	});
 </script>

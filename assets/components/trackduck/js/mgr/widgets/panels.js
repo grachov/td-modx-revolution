@@ -2,15 +2,16 @@ TrackDuck.panel.Home = function (config) {
 	config = config || {};
 	var supported = TrackDuck.createCORSRequest() !== null;
 	Ext.apply(config, {
-		baseCls: 'modx-formpanel',
-		cls: 'container form-with-labels',
+		border: false,
+		cls: 'container',
 		bodyStyle: '',
 		items: [{
 			html: '<h2>' + _('trackduck.title') + '</h2>',
 			border: false,
 			cls: 'modx-page-header'
 		}, {
-			layout: 'form',
+			layout: MODx.modx23 ? 'form' : 'anchor',
+			border: true,
 			items: [{
 				html: '<p>' + _('trackduck.intro') + '</p>',
 				border: false,
@@ -28,8 +29,8 @@ TrackDuck.panel.Home = function (config) {
 					bodyCssClass: 'panel-desc'
 				}, {
 					layout: 'hbox',
-					height: 40,
-					minHeight: 40,
+					height: MODx.modx23 ? 45 : 40,
+					minHeight: MODx.modx23 ? 45 : 40,
 					layoutConfig: {
 						padding: 5,
 						pack: 'start',
@@ -60,16 +61,17 @@ TrackDuck.panel.Home = function (config) {
 			}, {
 				border: false,
 				hidden: !supported,
-				bodyStyle: 'padding: 5px',
+				bodyStyle: 'padding: 5px' + (MODx.modx23 ? ' 0 0 0' : ''),
 				items: supported ? [{
-					xtype: 'trackduck-grid-contexts'
+					xtype: 'trackduck-grid-contexts',
+					cls: MODx.modx23 ? 'main-wrapper' : ''
 				}] : []
 			}]
 		}]
 	});
 	TrackDuck.panel.Home.superclass.constructor.call(this, config);
 };
-Ext.extend(TrackDuck.panel.Home, MODx.Panel, {
+Ext.extend(TrackDuck.panel.Home, MODx.FormPanel, {
 	showExtensionPage: function (type) {
 		var urls = TrackDuck.config.extensionUrls || {};
 		if (urls.hasOwnProperty(type)) {

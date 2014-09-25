@@ -16,7 +16,7 @@ TrackDuck.window.UpdateProject = function (config) {
 			anchor: '100%',
 			fieldLabel: _('trackduck.context.project_id'),
 			name: 'project_id',
-			allowBlank: false
+			allowBlank: true
 		}],
 		closeAction: 'close',
 		maximizable: false,
@@ -34,6 +34,7 @@ TrackDuck.window.Login = function (config) {
 		title: _('trackduck.signup'),
 		width: 400,
 		modal: true,
+		padding: MODx.modx23 ? '5px 0 0 0' : 0,
 		items: [{
 			html: '<p>' + _('trackduck.signup.intro') + '</p>',
 			border: false,
@@ -41,7 +42,7 @@ TrackDuck.window.Login = function (config) {
 		}, {
 			layout: 'anchor',
 			border: false,
-			padding: '5px 5px 0 5px',
+			padding: MODx.modx23 ? '0 10px 0 10px' : '5px 5px 0 5px',
 			defaults: {
 				style: {
 					marginBottom: '5px'

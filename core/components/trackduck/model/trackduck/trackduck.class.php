@@ -29,7 +29,7 @@ class TrackDuck
 			),
 			'extensionUrls' => array(
 				'chrome' => 'https://chrome.google.com/webstore/detail/trackduck/ekhfapehhkdanmgjkgagafnilhomfkek',
-				'firefox' => 'https://trackduck.com/en/content/firefox-extension/',
+				'firefox' => 'https://trackduck.com/en/content/extensions/firefox-extension/',
 			)
 		), $config);
 	}

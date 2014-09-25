@@ -40,27 +40,36 @@ Ext.extend(TrackDuck, Ext.Component, {
 			var status = TrackDuck.UNKNOWN;
 			var error = null;
 			var data = null;
+			var responseStatus = 0;
+			var response = {};
 			if (xhr.status === 200) {
 				try {
-					var response = JSON.parse(xhr.responseText);
+					response = JSON.parse(xhr.responseText);
 				} catch (e) {
 					callback(status, xhr.status, e, data);
 					return;
 				}
-				status = TrackDuck.OK;
-				data = {
-					projectId: response.projectId
-				};
-			} else {
-				if (xhr.status === 403) {
-					status = TrackDuck.NO_PROJECT;
-				} else {
-					if (xhr.status === 401) {
-						status = TrackDuck.NOT_LOGGED;
-					} else {
-						error = new Error('TrackDuck API Exception: ' + xhr.responseText);
-					}
+				if (response.status) {
+					responseStatus = response.status;
 				}
+			} else {
+				responseStatus = xhr.status;
+			}
+			switch (responseStatus) {
+				case 200:
+					status = TrackDuck.OK;
+					data = {
+						projectId: response.projectId || ''
+					};
+					break;
+				case 403:
+					status = TrackDuck.NO_PROJECT;
+					break;
+				case 401:
+					status = TrackDuck.NOT_LOGGED;
+					break;
+				default:
+					error = new Error('TrackDuck API Exception: ' + xhr.responseText);
 			}
 			callback(status, xhr.status, error, data);
 		};

@@ -96,10 +96,8 @@ Ext.extend(TrackDuck.grid.Contexts, MODx.grid.LocalGrid, {
 				success: {
 					fn: function (result) {
 						var response = (result && result.a && result.a.result && result.a.result.object) || {};
-						if (response.project_id) {
-							record.set('project_id', response.project_id);
-							record.commit();
-						}
+						record.set('project_id', response.project_id);
+						record.commit();
 					},
 					scope: this
 				}
